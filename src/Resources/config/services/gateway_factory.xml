@@ -6,7 +6,7 @@
 
         <service id="bitbag.payu_plugin.gateway_factory" class="Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder">
             <argument>BitBag\SyliusPayUPlugin\PayUGatewayFactory</argument>
-            <tag name="payum.gateway_factory_builder" factory="payu"/>
+            <tag name="payum.gateway_factory_builder" factory="Fiberpay"/>
         </service>
 
     </services>
