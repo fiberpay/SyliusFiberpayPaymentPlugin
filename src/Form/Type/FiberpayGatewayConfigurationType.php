@@ -16,7 +16,7 @@ declare(strict_types=1);
  * an email on kontakt@bitbag.pl.
  */
 
-namespace BitBag\SyliusPayUPlugin\Form\Type;
+namespace Fiberpay\SyliusFiberpayPlugin\Form\Type;
 
 use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridgeInterface;
 use Symfony\Component\Form\AbstractType;
@@ -26,7 +26,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-final class PayUGatewayConfigurationType extends AbstractType
+final class FiberpayGatewayConfigurationType extends AbstractType
 {
     /**
      * {@inheritdoc}
