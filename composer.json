@@ -60,7 +60,7 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "BitBag\\SyliusPayUPlugin\\": "src/",
+            "Fiberpay\\SyliusFiberpayPlugin\\": "src/",
             "Tests\\BitBag\\SyliusPayUPlugin\\": "tests/"
         }
     },
