@@ -60,7 +60,8 @@ final class PayUGatewayConfigurationType extends AbstractType
                         new Length([
                             'min' => 8,
                             'max' => 8,
-                            'exactMessage' => "exact"
+                            'exactMessage' => "exact",
+                            'groups' => ['sylius'],
                         ])
                     ],
                 ]
