@@ -58,7 +58,8 @@ final class PayUGatewayConfigurationType extends AbstractType
                             ]
                         ),
                         new Length([
-                            'exact' => 8
+                            'min' => 8,
+                            'max' => 8
                         ])
                     ],
                 ]
