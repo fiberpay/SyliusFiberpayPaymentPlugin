@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace BitBag\SyliusPayUPlugin;
+namespace Fiberpay\SyliusFiberpayPlugin;
 
 use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridgeInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
