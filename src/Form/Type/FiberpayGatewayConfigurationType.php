@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace Fiberpay\SyliusFiberpayPlugin\Form\Type;
 
-use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridgeInterface;
+use Fiberpay\SyliusFiberpayPlugin\Bridge\OpenPayUBridgeInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

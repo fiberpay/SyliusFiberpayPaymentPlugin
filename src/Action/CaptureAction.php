@@ -8,10 +8,10 @@
 
 declare(strict_types=1);
 
-namespace BitBag\SyliusPayUPlugin\Action;
+namespace Fiberpay\SyliusFiberpayPlugin\Action;
 
-use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridgeInterface;
-use BitBag\SyliusPayUPlugin\Exception\PayUException;
+use Fiberpay\SyliusFiberpayPlugin\Bridge\OpenPayUBridgeInterface;
+use Fiberpay\SyliusFiberpayPlugin\Exception\PayUException;
 use OpenPayU_Configuration;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;

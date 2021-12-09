@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Fiberpay\SyliusFiberpayPlugin;
 
-use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridgeInterface;
+use Fiberpay\SyliusFiberpayPlugin\Bridge\OpenPayUBridgeInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayFactory;
 

@@ -8,14 +8,14 @@
 
 declare(strict_types=1);
 
-namespace BitBag\SyliusPayUPlugin\DependencyInjection;
+namespace Fiberpay\SyliusFiberpayPlugin\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-final class BitBagSyliusPayUExtension extends Extension
+final class FiberpaySyliusFiberpayExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {

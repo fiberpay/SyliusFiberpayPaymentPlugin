@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace BitBag\SyliusPayUPlugin\Bridge;
+namespace Fiberpay\SyliusFiberpayPlugin\Bridge;
 
 use OpenPayU_Result;
 

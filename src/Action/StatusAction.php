@@ -8,10 +8,10 @@
 
 declare(strict_types=1);
 
-namespace BitBag\SyliusPayUPlugin\Action;
+namespace Fiberpay\SyliusFiberpayPlugin\Action;
 
 use ArrayAccess;
-use BitBag\SyliusPayUPlugin\Bridge\OpenPayUBridgeInterface;
+use Fiberpay\SyliusFiberpayPlugin\Bridge\OpenPayUBridgeInterface;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
