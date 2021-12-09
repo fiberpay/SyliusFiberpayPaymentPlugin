@@ -1,0 +1,9 @@
+fiberpay:
+    fiberpay_plugin:
+        gateway_configuration:
+            order_code:
+                not_blank: Nie podano kodu zlecenia Collect.
+            client_secret:
+                not_blank: Nie podano tajnego klucza API.
+            client_id:
+                not_blank: Nie podano jawnego klucza API.
