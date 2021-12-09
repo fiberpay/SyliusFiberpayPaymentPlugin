@@ -1,0 +1,9 @@
+fiberpay:
+    fiberpay_plugin:
+        environment: Environment
+        secure: Production
+        sandbox: Sandbox
+        order_code: Collect order code
+        gateway_label: Fiberpay
+        client_id: Public API key
+        client_secret: Secret API key
