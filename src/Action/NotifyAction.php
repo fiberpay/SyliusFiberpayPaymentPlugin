@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Fiberpay\FiberpaySyliusPaymentPlugin\Action;
 
+use ArrayObject;
 use Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayApi;
+use Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayCallback;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -13,6 +15,7 @@ use Sylius\Component\Core\Model\PaymentInterface;
 use Payum\Core\Request\Capture;
 use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Reply\HttpResponse;
+use Payum\Core\Request\Notify;
 use Payum\Core\Security\GenericTokenFactoryAwareInterface;
 use Payum\Core\Security\GenericTokenFactoryInterface;
 use Payum\Core\Security\TokenInterface;
@@ -34,24 +37,22 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
         $payment = $request->getFirstModel();
         Assert::isInstanceOf($payment, PaymentInterface::class);
 
-        $model = $request->getModel();
+        if ('POST' === $_SERVER['REQUEST_METHOD']) {
+            $body = file_get_contents('php://input');
+            $jwt = trim($body);
 
-        try {
-            if ('POST' === $_SERVER['REQUEST_METHOD']) {
-                $body = file_get_contents('php://input');
-                $data = trim($body);
-                throw new HttpResponse(json_encode($data));
-            }
-        } catch (\Exception $e) {
-            throw new HttpResponse($e->getMessage());
+            $callback = new FiberpayCallback($jwt, $this->api->getSecretKey());
+            throw new HttpResponse(json_encode($callback->getData()->payload->type));
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supports($request): bool
     {
-        return
-            $request instanceof Capture &&
-            $request->getModel() instanceof PaymentInterface
+        return $request instanceof Notify &&
+            $request->getModel() instanceof ArrayObject
         ;
     }
 
@@ -67,7 +68,7 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
     /**
     * @return mixed
     */
-    public static function getRequestHeaders()
+    private function getRequestHeaders()
     {
         if (function_exists('apache_request_headers')) {
             return apache_request_headers();
@@ -80,6 +81,12 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
             }
         }
         return $headers;
+    }
+
+    // TODO
+    private function validateApiKeyHeader($headers = [])
+    {
+        return true;
     }
 
 }

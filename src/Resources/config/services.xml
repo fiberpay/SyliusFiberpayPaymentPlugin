@@ -17,7 +17,7 @@
             <tag name="payum.action" factory="fiberpay_payment" alias="payum.action.capture" />
         </service>
 
-        <service id="Fiberpay\FiberpaySyliusPaymentPlugin\Action\NotifyAction">
+        <service id="Fiberpay\FiberpaySyliusPaymentPlugin\Action\NotifyAction" public="true">
             <tag name="payum.action" factory="fiberpay_payment" alias="payum.action.notify"/>
         </service>
 
