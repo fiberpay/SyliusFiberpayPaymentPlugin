@@ -11,9 +11,15 @@ use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Payum\Core\Request\Capture;
+use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\OrderInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class CaptureAction implements ActionInterface, ApiAwareInterface
+final class CaptureAction implements ActionInterface, ApiAwareInterface, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
 
     /** @var FiberpayApi */
     private $api;
@@ -22,12 +28,20 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
-        /** @var PaymentInterface $payment */
-        $payment = $request->getModel();
-
         $client = $this->api->getClientInstance();
 
         try {
+
+            /** @var PaymentInterface $payment */
+            $payment = $request->getModel();
+
+            /** @var OrderInterface */
+            $order = $payment->getOrder();
+
+            /** @var ChannelInterface */
+            $channel = $order->getChannel();
+
+            $description = 'Zamówienie #' . $order->getNumber() . " - " . $channel->getName();
 
             $amount = abs($payment->getAmount() / 100);
 
@@ -37,10 +51,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
                 // FiberpayApi::$validCurrencies,
                 // "Currency $currency is not valid"
             // );
-
-            $channel = 'Nazwa kanału/sklepu';
-            $orderNumber = $payment->getOrder()->getNumber();
-            $description = 'Zamówienie #' . $orderNumber . " - " . $channel;
 
             $callbackUrl = '';
             $redirectUrl = '';
