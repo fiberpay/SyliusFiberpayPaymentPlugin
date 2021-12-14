@@ -33,18 +33,41 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         /** @var PaymentInterface $payment */
         $payment = $request->getModel();
 
+        $client = $this->api->getClientInstance();
+
         try {
-            $response = $this->client->request('POST', 'https://sylius-payment.free.beeceptor.com', [
-                'body' => json_encode([
-                    'price' => $payment->getAmount(),
-                    'currency' => $payment->getCurrencyCode(),
-                    'api_key' => $this->api->getApiKey(),
-                ]),
-            ]);
-        } catch (RequestException $exception) {
-            $response = $exception->getResponse();
+
+            $amount = abs($payment->getAmount() / 100);
+
+            $currency = $payment->getCurrencyCode();
+            // Assert::inArray(
+                // $currency,
+                // FiberpayApi::$validCurrencies,
+                // "Currency $currency is not valid"
+            // );
+
+            $channel = 'Nazwa kanału/sklepu';
+            $orderNumber = $payment->getOrder()->getNumber();
+            $description = 'Zamówienie #' . $orderNumber . " - " . $channel;
+
+            $callbackUrl = '';
+            $redirectUrl = '';
+
+            $response = $client->addCollectItem(
+                $this->api->getOrderCode(),
+                $description,
+                $amount,
+                $currency,
+                $callbackUrl,
+                null,
+                null,
+                $redirectUrl
+            );
+
+        } catch (\Exception $exception) {
+            $response = $exception->getMessage();
         } finally {
-            $payment->setDetails(['status' => $response->getStatusCode()]);
+            $payment->setDetails(['status' => $response]);
         }
     }
 

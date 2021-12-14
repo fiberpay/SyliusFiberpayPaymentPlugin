@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fiberpay\FiberpaySyliusPaymentPlugin;
 
-// use FiberPay\FiberPayClient;
+use FiberPay\FiberPayClient;
 
 final class FiberpayApi
 {
@@ -71,8 +71,11 @@ final class FiberpayApi
         return $this->environment === self::ENVIRONMENT_SANDBOX;
     }
 
-    // public function getClientInstance()
-    // {
-        // return new FiberPayClient($this->apiKey, $this->secretKey, $this->isSandbox());
-    // }
+    /**
+     * @return FiberPayClient
+     */
+    public function getClientInstance(): FiberPayClient
+    {
+        return new FiberPayClient($this->apiKey, $this->secretKey, $this->isSandbox());
+    }
 }
