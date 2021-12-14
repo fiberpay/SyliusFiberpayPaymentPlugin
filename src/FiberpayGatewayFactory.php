@@ -19,7 +19,12 @@ final class FiberpayGatewayFactory extends GatewayFactory
         ]);
 
         $config['payum.api'] = function (ArrayObject $config) {
-            return new FiberpayApi($config['api_key']);
+            return new FiberpayApi(
+                $config['environment'],
+                $config['api_key'],
+                $config['secret_key'],
+                $config['order_code']
+            );
         };
     }
 }
