@@ -1,0 +1,9 @@
+fiberpay:
+  fiberpay_plugin:
+    environment: Środowisko
+    production: Produkcyjne
+    sandbox: Testowe
+    api_key: Klucz API
+    secret_key: Klucz tajny
+    order_code: Kod zlecenia Collect
+    gateway_label: Fiberpay
