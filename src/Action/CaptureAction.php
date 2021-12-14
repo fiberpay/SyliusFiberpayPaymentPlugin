@@ -11,18 +11,20 @@ use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Payum\Core\Request\Capture;
+use Payum\Core\Security\GenericTokenFactoryAwareInterface;
+use Payum\Core\Security\GenericTokenFactoryInterface;
+use Payum\Core\Security\TokenInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class CaptureAction implements ActionInterface, ApiAwareInterface, ContainerAwareInterface
+final class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenFactoryAwareInterface
 {
-    use ContainerAwareTrait;
 
     /** @var FiberpayApi */
     private $api;
+
+    /** @var GenericTokenFactoryInterface */
+    private $tokenFactory;
 
     public function execute($request): void
     {
@@ -41,6 +43,13 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Contain
             /** @var ChannelInterface */
             $channel = $order->getChannel();
 
+            /** @var TokenInterface $token */
+            $token = $request->getToken();
+
+            $notifyToken = $this->tokenFactory->createNotifyToken($token->getGatewayName(), $token->getDetails());
+            $redirectUrl = $token->getTargetUrl();
+            $callbackUrl = $notifyToken->getTargetUrl();
+
             $description = 'Zamówienie #' . $order->getNumber() . " - " . $channel->getName();
 
             $amount = abs($payment->getAmount() / 100);
@@ -51,9 +60,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Contain
                 // FiberpayApi::$validCurrencies,
                 // "Currency $currency is not valid"
             // );
-
-            $callbackUrl = '';
-            $redirectUrl = '';
 
             $response = $client->addCollectItem(
                 $this->api->getOrderCode(),
@@ -88,5 +94,11 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Contain
         }
 
         $this->api = $api;
+    }
+
+
+    public function setGenericTokenFactory(GenericTokenFactoryInterface $genericTokenFactory = null): void
+    {
+        $this->tokenFactory = $genericTokenFactory;
     }
 }
