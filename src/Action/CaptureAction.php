@@ -11,6 +11,7 @@ use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Payum\Core\Request\Capture;
+use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Security\GenericTokenFactoryAwareInterface;
 use Payum\Core\Security\GenericTokenFactoryInterface;
 use Payum\Core\Security\TokenInterface;
@@ -52,9 +53,9 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
 
             $description = 'Zamówienie #' . $order->getNumber() . " - " . $channel->getName();
 
-            $amount = abs($payment->getAmount() / 100);
+            $amount = abs($order->getTotal() / 100);
 
-            $currency = $payment->getCurrencyCode();
+            $currency = $order->getCurrencyCode();
             // Assert::inArray(
                 // $currency,
                 // FiberpayApi::$validCurrencies,
@@ -72,10 +73,13 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
                 $redirectUrl
             );
 
-        } catch (\Exception $exception) {
-            $response = $exception->getMessage();
-        } finally {
             $payment->setDetails(['status' => $response]);
+
+            $orderCode = json_decode($response)->data->code;
+            $paymentUrl = $this->api->getPaymentUrl($order, $orderCode);
+            throw new HttpRedirect($paymentUrl);
+        } catch (\Exception $exception) {
+            $payment->setDetails(['status' => $exception->getMessage()]);
         }
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fiberpay\FiberpaySyliusPaymentPlugin;
 
 use FiberPay\FiberPayClient;
+use Sylius\Component\Core\Model\OrderInterface;
 
 final class FiberpayApi
 {
@@ -19,6 +20,11 @@ final class FiberpayApi
     public static $validEnvironments = [
         self::ENVIRONMENT_SANDBOX,
         self::ENVIRONMENT_PRODUCTION,
+    ];
+
+    private $validLocales = [
+        'en',
+        'pl',
     ];
 
     /** @var string */
@@ -77,5 +83,24 @@ final class FiberpayApi
     public function getClientInstance(): FiberPayClient
     {
         return new FiberPayClient($this->apiKey, $this->secretKey, $this->isSandbox());
+    }
+
+    public function getPaymentUrl(OrderInterface $order, string $orderCode): string
+    {
+        $locale = $this->getFallbackLocaleCode($order->getLocaleCode());
+
+        $url = $this->isSandbox() ? 'http://test.fiberpay.pl' : 'http://fiberpay.pl';
+
+        return "$url/$locale/order/$orderCode";
+    }
+
+    private function getFallbackLocaleCode(string $localeCode): string
+    {
+        $locale = explode('_', $localeCode)[0];
+        if(in_array($locale, $this->validLocales)) {
+            return $locale;
+        }
+
+        return 'en';
     }
 }
