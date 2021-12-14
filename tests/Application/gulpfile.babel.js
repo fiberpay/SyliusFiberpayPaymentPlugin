@@ -3,20 +3,20 @@ import gulp from 'gulp';
 import yargs from 'yargs';
 
 const { argv } = yargs
-    .options({
-      rootPath: {
-        description: '<path> path to public assets directory',
-        type: 'string',
-        requiresArg: true,
-        required: false,
-      },
-      nodeModulesPath: {
-        description: '<path> path to node_modules directory',
-        type: 'string',
-        requiresArg: true,
-        required: false,
-      },
-    });
+  .options({
+    rootPath: {
+      description: '<path> path to public assets directory',
+      type: 'string',
+      requiresArg: true,
+      required: false,
+    },
+    nodeModulesPath: {
+      description: '<path> path to node_modules directory',
+      type: 'string',
+      requiresArg: true,
+      required: false,
+    },
+  });
 
 const config = [
   '--rootPath',

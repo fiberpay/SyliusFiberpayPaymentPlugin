@@ -1,15 +1,22 @@
-<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-    <imports>
-        <import resource="services/**/*.xml"/>
-    </imports>
+<?xml version="1.0" encoding="UTF-8" ?>
 
-    <parameters>
-        <parameter key="bitbag_open_payu_cache_dir">%kernel.project_dir%/var/cache/%env(APP_ENV)%</parameter>
-    </parameters>
-
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <defaults public="false" autoconfigure="false" autowire="false"/>
+
+        <service id="app.fiberpay_payment" class="Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder">
+            <argument>Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayGatewayFactory</argument>
+            <tag name="payum.gateway_factory_builder" factory="fiberpay_payment" />
+        </service>
+
+        <service id="Fiberpay\FiberpaySyliusPaymentPlugin\Form\Type\FiberpayGatewayConfigurationType">
+            <tag name="sylius.gateway_configuration_type" type="fiberpay_payment" label="Fiberpay" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="Fiberpay\FiberpaySyliusPaymentPlugin\Action\CaptureAction" public="true">
+            <argument type="service" id="sylius.http_client" />
+            <tag name="payum.action" factory="fiberpay_payment" alias="payum.action.capture" />
+        </service>
 
     </services>
 </container>

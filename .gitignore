@@ -1,12 +1,13 @@
-/vendor
-
-!tests/Application/web/app_test.php
-tests/Application/web/*
-!tests/Application/web/.gitkeep
+/vendor/
+/node_modules/
+/composer.lock
 
 /etc/build/*
-!/etc/build/.gitkeep
+!/etc/build/.gitignore
 
-tests/Application/var/*
+/tests/Application/yarn.lock
 
-tests/Application/node_modules
+/.phpunit.result.cache
+/behat.yml
+/phpspec.yml
+/phpunit.xml

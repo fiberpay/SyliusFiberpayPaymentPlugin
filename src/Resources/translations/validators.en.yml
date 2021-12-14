@@ -1,9 +1,9 @@
 fiberpay:
-    fiberpay_plugin:
-        gateway_configuration:
-            order_code:
-                not_blank: Collect order code has not been provided.
-            client_secret:
-                not_blank: Secret API key has not been provided.
-            client_id:
-                not_blank: Public API key has not been provided.
+  fiberpay_plugin:
+    gateway_configuration:
+      api_key:
+        not_blank: The API key has not been provided.
+      secret_key:
+        not_blank: The secret key has not been provided.
+      order_code:
+        not_blank: The Collect order code has not been provided.

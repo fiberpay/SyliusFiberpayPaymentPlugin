@@ -1,2 +1,4 @@
 suites:
-    PayUPlugin: { namespace: BitBag\SyliusPayUPlugin, psr4_prefix: BitBag\SyliusPayUPlugin, spec_path: tests, src_path: src }
+    main:
+        namespace: Fiberpay\FiberpaySyliusPaymentPlugin
+        psr4_prefix: Fiberpay\FiberpaySyliusPaymentPlugin
