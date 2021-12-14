@@ -6,6 +6,9 @@ namespace Fiberpay\FiberpaySyliusPaymentPlugin;
 
 final class FiberpayApi
 {
+    const ENVIRONMENT_PRODUCTION = 'production';
+    const ENVIRONMENT_SANDBOX = 'sandbox';
+
     /** @var string */
     private $apiKey;
 
