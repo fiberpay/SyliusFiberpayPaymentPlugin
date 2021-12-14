@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Fiberpay\FiberpaySyliusPaymentPlugin\Action;
 
 use Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayApi;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -16,15 +14,9 @@ use Payum\Core\Request\Capture;
 
 final class CaptureAction implements ActionInterface, ApiAwareInterface
 {
-    /** @var Client */
-    private $client;
+
     /** @var FiberpayApi */
     private $api;
-
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
 
     public function execute($request): void
     {

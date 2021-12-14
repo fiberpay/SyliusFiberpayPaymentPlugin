@@ -14,7 +14,6 @@
         </service>
 
         <service id="Fiberpay\FiberpaySyliusPaymentPlugin\Action\CaptureAction" public="true">
-            <argument type="service" id="sylius.http_client" />
             <tag name="payum.action" factory="fiberpay_payment" alias="payum.action.capture" />
         </service>
 
