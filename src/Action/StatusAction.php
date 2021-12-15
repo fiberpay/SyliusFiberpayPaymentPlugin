@@ -21,16 +21,12 @@ final class StatusAction implements ActionInterface
         $details = $payment->getDetails();
 
         // if (200 === $details['status']) {
-            $request->markCaptured();
-
-            return;
+            // $request->markCaptured();
         // }
 
-        if (400 === $details['status']) {
+        // if (400 === $details['status']) {
             $request->markFailed();
-
-            return;
-        }
+        // }
     }
 
     public function supports($request): bool

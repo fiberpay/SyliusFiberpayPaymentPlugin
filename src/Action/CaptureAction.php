@@ -17,6 +17,7 @@ use Payum\Core\Security\GenericTokenFactoryInterface;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Webmozart\Assert\Assert;
 
 final class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenFactoryAwareInterface
 {
@@ -56,11 +57,12 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
             $amount = abs($order->getTotal() / 100);
 
             $currency = $order->getCurrencyCode();
-            // Assert::inArray(
-                // $currency,
-                // FiberpayApi::$validCurrencies,
-                // "Currency $currency is not valid"
-            // );
+
+            Assert::inArray(
+                $currency,
+                FiberpayApi::$validCurrencies,
+                "Currency $currency is not valid"
+            );
 
             $response = $client->addCollectItem(
                 $this->api->getOrderCode(),
@@ -77,8 +79,10 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
 
             $orderCode = json_decode($response)->data->code;
             $paymentUrl = $this->api->getPaymentUrl($order, $orderCode);
+
             throw new HttpRedirect($paymentUrl);
         } catch (\Exception $exception) {
+            if($exception instanceof HttpRedirect) throw $exception;
             $payment->setDetails(['status' => $exception->getMessage()]);
         }
     }
