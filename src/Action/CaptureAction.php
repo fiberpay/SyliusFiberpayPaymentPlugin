@@ -33,7 +33,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
         RequestNotSupportedException::assertSupports($this, $request);
 
         try {
-
             /** @var PaymentInterface $payment */
             $payment = $request->getModel();
 
@@ -47,7 +46,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
             $token = $request->getToken();
 
             $notifyToken = $this->tokenFactory->createNotifyToken($token->getGatewayName(), $token->getDetails());
-            $redirectUrl = $token->getTargetUrl();
+            $redirectUrl = $token->getAfterUrl();
             $callbackUrl = $notifyToken->getTargetUrl();
 
             $description = 'Zamówienie #' . $order->getNumber() . " - " . $channel->getName();
