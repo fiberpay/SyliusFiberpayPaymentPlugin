@@ -84,12 +84,12 @@ final class FiberpayApi
 
     private function setApiUrl()
     {
-        $this->apiUrl = $this->isSandbox() ? 'http://apitest.fiberpay.pl' : 'http://api.fiberpay.pl';
+        $this->apiUrl = $this->isSandbox() ? 'https://apitest.fiberpay.pl' : 'https://api.fiberpay.pl';
     }
 
     private function setFrontendUrl(): void
     {
-        $this->frontendUrl = $this->isSandbox() ? 'http://test.fiberpay.pl' : 'http://fiberpay.pl';
+        $this->frontendUrl = $this->isSandbox() ? 'https://test.fiberpay.pl' : 'https://fiberpay.pl';
     }
 
     public function getPaymentUrl(OrderInterface $order, string $orderCode): string
