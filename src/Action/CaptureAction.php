@@ -32,8 +32,6 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
-        $client = $this->api->getClientInstance();
-
         try {
 
             /** @var PaymentInterface $payment */
@@ -64,7 +62,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
                 "Currency $currency is not valid"
             );
 
-            $response = $client->addCollectItem(
+            $response = $this->api->addCollectItem(
                 $this->api->getOrderCode(),
                 $description,
                 $amount,
