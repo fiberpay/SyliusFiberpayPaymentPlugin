@@ -20,12 +20,14 @@ final class StatusAction implements ActionInterface
 
         $details = $payment->getDetails();
 
+// TODO dodać aktualizację statusów płatności na podstawie payment details
+        $request->markPending();
         // if (200 === $details['status']) {
             // $request->markCaptured();
         // }
 
         // if (400 === $details['status']) {
-            $request->markFailed();
+            // $request->markFailed();
         // }
     }
 

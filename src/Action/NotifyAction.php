@@ -42,7 +42,8 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
             $jwt = trim($body);
 
             $callback = new FiberpayCallback($jwt, $this->api->getSecretKey());
-            throw new HttpResponse(json_encode($callback->getData()->payload->type));
+            // TODO chyba trzeba ustawić stratus w paymencie tutaj
+            throw new HttpResponse(json_encode($callback->getData()->payload->type)); //TODO przekierowanie???
         }
     }
 

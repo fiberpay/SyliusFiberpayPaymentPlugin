@@ -72,6 +72,7 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
                 $redirectUrl
             );
 
+            // TODO dodać statusy z response
             $payment->setDetails(['status' => $response]);
 
             $orderCode = json_decode($response)->data->code;

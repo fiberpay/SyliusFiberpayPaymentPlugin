@@ -29,6 +29,8 @@ final class FiberpayApi
         'pl',
     ];
 
+    // TODO dodać statusy order itemów
+
     /** @var string */
     private $environment;
 
