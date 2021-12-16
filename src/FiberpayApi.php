@@ -8,12 +8,9 @@ use Sylius\Component\Core\Model\OrderInterface;
 
 final class FiberpayApi
 {
-    private $version = '1.0';
-    private $apiUrl;
-    private $frontendUrl;
-
     const CURRENCY_PLN = 'PLN';
 
+    /** @var array */
     public static $validCurrencies = [ self::CURRENCY_PLN ];
 
     // TODO usunąć statusy które nie występują
@@ -31,6 +28,7 @@ final class FiberpayApi
     const STATUS_CANCELLED  = 'cancelled';
     const STATUS_EXPIRED    = 'expired';
 
+    /** @var array */
     public static $validStatuses = [
         self::STATUS_COMPLETED,
         self::STATUS_FAILED,
@@ -49,15 +47,26 @@ final class FiberpayApi
     const ENVIRONMENT_SANDBOX = 'sandbox';
     const ENVIRONMENT_PRODUCTION = 'production';
 
+    /** @var array */
     public static $validEnvironments = [
         self::ENVIRONMENT_SANDBOX,
         self::ENVIRONMENT_PRODUCTION,
     ];
 
+    /** @var array */
     private $validLocales = [
         'en',
         'pl',
     ];
+
+    /** @var string */
+    private $version = '1.0';
+
+    /** @var string */
+    private $apiUrl;
+
+    /** @var string */
+    private $frontendUrl;
 
     /** @var string */
     private $environment;
