@@ -72,11 +72,11 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
                 $redirectUrl
             );
 
-            // TODO dodać statusy z response
-            $payment->setDetails(['status' => $response]);
+            $orderItemData = json_decode($response)->data;
 
-            $orderCode = json_decode($response)->data->code;
-            $paymentUrl = $this->api->getPaymentUrl($order, $orderCode);
+            $payment->setDetails(['status' => $orderItemData->status, 'orderItemData' => $orderItemData]);
+
+            $paymentUrl = $this->api->getPaymentUrl($order, $orderItemData->code);
 
             throw new HttpRedirect($paymentUrl);
         } catch (\Exception $exception) {
