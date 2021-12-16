@@ -16,6 +16,36 @@ final class FiberpayApi
 
     public static $validCurrencies = [ self::CURRENCY_PLN ];
 
+    // TODO usunąć statusy które nie występują
+
+    const STATUS_ACCEPTED   = 'accepted';   // after getting the order request, marks candidates for processing by OrderDispatcher;
+    const STATUS_PROCESSING = 'processing'; // after OrderDispatcher picked the order up to dispatch to bank, excludes from next batch of processing
+    const STATUS_COMPLETED  = 'completed';  // after bank confirmed outgoing transfer executed (WITHDRAW) or incoming transfer found (DEPOSIT)
+    const STATUS_FAILED     = 'failed';     // after bank returned error or rejected operation; expected deposit timed out without receiving money
+    const STATUS_SUSPENDED  = 'suspended';  // after the order withdrawn from processing, may be moved to 'received' again (or to 'failed')
+    const STATUS_OPEN       = 'open';       // after creation of mass payment order
+    const STATUS_DEFINED    = 'defined';    // after creation of mass payment item order
+    const STATUS_QUEUED     = 'queued';     // after mass payment transaction confirmed used for queue mass payment items
+    const STATUS_PARTIALLY_COMPLETED = 'partially_completed'; //after one or more of mass payment items was failed
+    const STATUS_RECEIVED   = 'received';   // after transfer item transaction matched with order
+    const STATUS_CANCELLED  = 'cancelled';
+    const STATUS_EXPIRED    = 'expired';
+
+    public static $validStatuses = [
+        self::STATUS_COMPLETED,
+        self::STATUS_FAILED,
+        self::STATUS_PROCESSING,
+        self::STATUS_ACCEPTED,
+        self::STATUS_SUSPENDED,
+        self::STATUS_OPEN,
+        self::STATUS_DEFINED,
+        self::STATUS_QUEUED,
+        self::STATUS_PARTIALLY_COMPLETED,
+        self::STATUS_RECEIVED,
+        self::STATUS_CANCELLED,
+        self::STATUS_EXPIRED,
+    ];
+
     const ENVIRONMENT_SANDBOX = 'sandbox';
     const ENVIRONMENT_PRODUCTION = 'production';
 
@@ -28,8 +58,6 @@ final class FiberpayApi
         'en',
         'pl',
     ];
-
-    // TODO dodać statusy order itemów
 
     /** @var string */
     private $environment;
@@ -86,11 +114,15 @@ final class FiberpayApi
 
     private function setApiUrl()
     {
+        $this->apiUrl = 'http://localhost:8080';
+        return;
         $this->apiUrl = $this->isSandbox() ? 'https://apitest.fiberpay.pl' : 'https://api.fiberpay.pl';
     }
 
     private function setFrontendUrl(): void
     {
+        $this->frontendUrl = 'http://localhost:3000';
+        return;
         $this->frontendUrl = $this->isSandbox() ? 'https://test.fiberpay.pl' : 'https://fiberpay.pl';
     }
 
