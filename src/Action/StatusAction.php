@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fiberpay\FiberpaySyliusPaymentPlugin\Action;
 
+use Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayApi;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Request\GetStatusInterface;
@@ -20,15 +21,45 @@ final class StatusAction implements ActionInterface
 
         $details = $payment->getDetails();
 
-// TODO dodać aktualizację statusów płatności na podstawie payment details
-        $request->markPending();
-        // if (200 === $details['status']) {
-            // $request->markCaptured();
-        // }
+        switch ($details['status']) {
+            case FiberpayApi::STATUS_OPEN:
+            case FiberpayApi::STATUS_DEFINED: // TODO występuje ???
+                // $request->markNew(); //TODO ustalić pod UI ???
+                $request->markPending();
+                break;
 
-        // if (400 === $details['status']) {
-            // $request->markFailed();
-        // }
+            case FiberpayApi::STATUS_ACCEPTED:
+            case FiberpayApi::STATUS_PROCESSING:
+            case FiberpayApi::STATUS_COMPLETED:
+            case FiberpayApi::STATUS_RECEIVED:
+                $request->markCaptured();
+                break;
+
+            case FiberpayApi::STATUS_CANCELLED:
+                $request->markCanceled();
+                break;
+
+            case FiberpayApi::STATUS_EXPIRED:
+                $request->markExpired();
+                break;
+
+            case FiberpayApi::STATUS_FAILED:
+                $request->markFailed();
+                break;
+
+            case FiberpayApi::STATUS_QUEUED: // TODO występuje ???
+            case FiberpayApi::STATUS_PARTIALLY_COMPLETED: // TODO występuje ???
+                $request->markPending();
+                break;
+
+            case FiberpayApi::STATUS_SUSPENDED:
+                $request->markSuspended();
+                break;
+
+            default:
+                $request->markUnknown();
+                break;
+        }
     }
 
     public function supports($request): bool
