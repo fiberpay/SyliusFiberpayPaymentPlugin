@@ -12,15 +12,8 @@ use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Sylius\Component\Core\Model\PaymentInterface;
-use Payum\Core\Request\Capture;
-use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Request\Notify;
-use Payum\Core\Security\GenericTokenFactoryAwareInterface;
-use Payum\Core\Security\GenericTokenFactoryInterface;
-use Payum\Core\Security\TokenInterface;
-use Sylius\Component\Core\Model\ChannelInterface;
-use Sylius\Component\Core\Model\OrderInterface;
 use Webmozart\Assert\Assert;
 
 final class NotifyAction implements ActionInterface, ApiAwareInterface
@@ -35,15 +28,27 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
         RequestNotSupportedException::assertSupports($this, $request);
         /** @var PaymentInterface $payment */
         $payment = $request->getFirstModel();
+
+        $order = $payment->getOrder();
         Assert::isInstanceOf($payment, PaymentInterface::class);
+
+        $model = $request->getModel();
 
         if ('POST' === $_SERVER['REQUEST_METHOD']) {
             $body = file_get_contents('php://input');
             $jwt = trim($body);
 
             $callback = new FiberpayCallback($jwt, $this->api->getSecretKey());
-            // TODO chyba trzeba ustawić stratus w paymencie tutaj
-            throw new HttpResponse(json_encode($callback->getData()->payload->type)); //TODO przekierowanie???
+            $payment->setState(PaymentInterface::STATE_COMPLETED);
+            $orderItemData = $callback->getOrderItemData();
+
+            $model['status'] = $orderItemData->status;
+            $request->setModel($model);
+            $payment->setState(PaymentInterface::STATE_COMPLETED);
+            // $order->setPaymentState(PaymentInterface::STATE_COMPLETED);
+            // $payment->setDetails(['status' => $orderItemData->status, 'orderItemData' => $orderItemData]);
+
+            throw new HttpResponse('OK');
         }
     }
 
