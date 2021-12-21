@@ -123,15 +123,11 @@ final class FiberpayApi
 
     private function setApiUrl()
     {
-        $this->apiUrl = 'http://localhost:8080';
-        return;
         $this->apiUrl = $this->isSandbox() ? 'https://apitest.fiberpay.pl' : 'https://api.fiberpay.pl';
     }
 
     private function setFrontendUrl(): void
     {
-        $this->frontendUrl = 'http://localhost:3000';
-        return;
         $this->frontendUrl = $this->isSandbox() ? 'https://test.fiberpay.pl' : 'https://fiberpay.pl';
     }
 
