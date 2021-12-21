@@ -1,112 +1,28 @@
-<p align="center">
-    <a href="https://sylius.com" target="_blank">
-        <img src="https://demo.sylius.com/assets/shop/img/logo.png" />
-    </a>
-</p>
+# FiberpaySyliusPaymentPlugin
 
-<h1 align="center">Plugin Skeleton</h1>
+# Overview
+The plugin integrates [Fiberpay](https://fiberpay.pl/) with Sylius based applications. After the installation you should be able to create a payment method for Fiberpay gateway and enable its payments in your web store.
 
-<p align="center">Skeleton for starting Sylius plugins.</p>
+# Installation
+```bash
+$ composer require fiberpay/fiberpay-sylius-payment-plugin
+```
 
-## Documentation
+## Additional resources for developers
+---
+To learn more about our contribution workflow and more, we encourage you to use the following resources:
+* [Sylius Documentation](https://docs.sylius.com/en/latest/)
+* [Sylius Contribution Guide](https://docs.sylius.com/en/latest/contributing/)
+* [Sylius Online Course](https://sylius.com/online-course/)
 
-For a comprehensive guide on Sylius Plugins development please go to Sylius documentation,
-there you will find the <a href="https://docs.sylius.com/en/latest/plugin-development-guide/index.html">Plugin Development Guide</a>, that is full of examples.
 
-## Quickstart Installation
+## License
+---
 
-1. Run `composer create-project sylius/plugin-skeleton ProjectName`.
+This plugin's source code is completely free and released under the terms of the MIT license.
 
-2. From the plugin skeleton root directory, run the following commands:
 
-    ```bash
-    $ (cd tests/Application && yarn install)
-    $ (cd tests/Application && yarn build)
-    $ (cd tests/Application && APP_ENV=test bin/console assets:install public)
+## Contact
 
-    $ (cd tests/Application && APP_ENV=test bin/console doctrine:database:create)
-    $ (cd tests/Application && APP_ENV=test bin/console doctrine:schema:create)
-    ```
-
-To be able to setup a plugin's database, remember to configure you database credentials in `tests/Application/.env` and `tests/Application/.env.test`.
-
-## Usage
-
-### Running plugin tests
-
-  - PHPUnit
-
-    ```bash
-    vendor/bin/phpunit
-    ```
-
-  - PHPSpec
-
-    ```bash
-    vendor/bin/phpspec run
-    ```
-
-  - Behat (non-JS scenarios)
-
-    ```bash
-    vendor/bin/behat --strict --tags="~@javascript"
-    ```
-
-  - Behat (JS scenarios)
-
-    1. [Install Symfony CLI command](https://symfony.com/download).
-
-    2. Start Headless Chrome:
-
-      ```bash
-      google-chrome-stable --enable-automation --disable-background-networking --no-default-browser-check --no-first-run --disable-popup-blocking --disable-default-apps --allow-insecure-localhost --disable-translate --disable-extensions --no-sandbox --enable-features=Metal --headless --remote-debugging-port=9222 --window-size=2880,1800 --proxy-server='direct://' --proxy-bypass-list='*' http://127.0.0.1
-      ```
-
-    3. Install SSL certificates (only once needed) and run test application's webserver on `127.0.0.1:8080`:
-
-      ```bash
-      symfony server:ca:install
-      APP_ENV=test symfony server:start --port=8080 --dir=tests/Application/public --daemon
-      ```
-
-    4. Run Behat:
-
-      ```bash
-      vendor/bin/behat --strict --tags="@javascript"
-      ```
-
-  - Static Analysis
-
-    - Psalm
-
-      ```bash
-      vendor/bin/psalm
-      ```
-
-    - PHPStan
-
-      ```bash
-      vendor/bin/phpstan analyse -c phpstan.neon -l max src/
-      ```
-
-  - Coding Standard
-
-    ```bash
-    vendor/bin/ecs check src
-    ```
-
-### Opening Sylius with your plugin
-
-- Using `test` environment:
-
-    ```bash
-    (cd tests/Application && APP_ENV=test bin/console sylius:fixtures:load)
-    (cd tests/Application && APP_ENV=test bin/console server:run -d public)
-    ```
-
-- Using `dev` environment:
-
-    ```bash
-    (cd tests/Application && APP_ENV=dev bin/console sylius:fixtures:load)
-    (cd tests/Application && APP_ENV=dev bin/console server:run -d public)
-    ```
+---
+If you want to contact us, feel free to send us an e-mail to info@fiberpay.pl with your question(s). We guarantee that we answer as soon as we can!

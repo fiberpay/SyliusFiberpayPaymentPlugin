@@ -5,55 +5,67 @@ declare(strict_types=1);
 namespace Fiberpay\FiberpaySyliusPaymentPlugin\Action;
 
 use Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayApi;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Payum\Core\Request\Capture;
+use Payum\Core\Reply\HttpRedirect;
+use Payum\Core\Security\GenericTokenFactoryAwareInterface;
+use Payum\Core\Security\GenericTokenFactoryInterface;
+use Payum\Core\Security\TokenInterface;
+use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Customer\Model\CustomerInterface;
+use Webmozart\Assert\Assert;
 
-final class CaptureAction implements ActionInterface, ApiAwareInterface
+final class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenFactoryAwareInterface
 {
-    /** @var Client */
-    private $client;
+
     /** @var FiberpayApi */
     private $api;
 
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
+    /** @var GenericTokenFactoryInterface */
+    private $tokenFactory;
 
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
-        /** @var PaymentInterface $payment */
-        $payment = $request->getModel();
-
-        $client = $this->api->getClientInstance();
-
         try {
+            /** @var PaymentInterface $payment */
+            $payment = $request->getModel();
 
-            $amount = abs($payment->getAmount() / 100);
+            /** @var OrderInterface */
+            $order = $payment->getOrder();
 
-            $currency = $payment->getCurrencyCode();
-            // Assert::inArray(
-                // $currency,
-                // FiberpayApi::$validCurrencies,
-                // "Currency $currency is not valid"
-            // );
+            /** @var CustomerInterface */
+            $customer = $order->getCustomer();
 
-            $channel = 'Nazwa kanału/sklepu';
-            $orderNumber = $payment->getOrder()->getNumber();
-            $description = 'Zamówienie #' . $orderNumber . " - " . $channel;
+            /** @var ChannelInterface */
+            $channel = $order->getChannel();
 
-            $callbackUrl = '';
-            $redirectUrl = '';
+            /** @var TokenInterface $token */
+            $token = $request->getToken();
 
-            $response = $client->addCollectItem(
+            $notifyToken = $this->tokenFactory->createNotifyToken($token->getGatewayName(), $token->getDetails());
+            $redirectUrl = $token->getAfterUrl();
+            $callbackUrl = $notifyToken->getTargetUrl();
+
+            $description = 'Zamówienie #' . $order->getNumber() . " - " . $channel->getName();
+
+            $amount = abs($order->getTotal() / 100);
+
+            $currency = $order->getCurrencyCode();
+
+            Assert::inArray(
+                $currency,
+                FiberpayApi::$validCurrencies,
+                "Currency $currency is not valid"
+            );
+
+            $response = $this->api->addCollectItem(
                 $this->api->getOrderCode(),
                 $description,
                 $amount,
@@ -61,13 +73,22 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
                 $callbackUrl,
                 null,
                 null,
-                $redirectUrl
+                $redirectUrl,
+                (string) $customer->getEmail(),
+                (string) $customer->getFirstName(),
+                (string) $customer->getLastName()
             );
 
+            $orderItemData = json_decode($response)->data;
+
+            $payment->setDetails(['status' => $orderItemData->status, 'orderItemData' => $orderItemData]);
+
+            $paymentUrl = $this->api->getPaymentUrl($order, $orderItemData->code);
+
+            throw new HttpRedirect($paymentUrl);
         } catch (\Exception $exception) {
-            $response = $exception->getMessage();
-        } finally {
-            $payment->setDetails(['status' => $response]);
+            if($exception instanceof HttpRedirect) throw $exception;
+            $payment->setDetails(['status' => $exception->getMessage()]);
         }
     }
 
@@ -86,5 +107,11 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface
         }
 
         $this->api = $api;
+    }
+
+
+    public function setGenericTokenFactory(GenericTokenFactoryInterface $genericTokenFactory = null): void
+    {
+        $this->tokenFactory = $genericTokenFactory;
     }
 }

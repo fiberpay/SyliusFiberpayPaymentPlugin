@@ -1,100 +1,54 @@
 <?php
 
-/*
- * This file was created by developers working at BitBag
- * Do you need more information about us and what we do? Visit our https://bitbag.io website!
- * We are hiring developers from all over the world. Join us and start your new, exciting adventure and become part of us: https://bitbag.io/career
-*/
-
 declare(strict_types=1);
 
-namespace Fiberpay\SyliusFiberpayPlugin\Action;
+namespace Fiberpay\FiberpaySyliusPaymentPlugin\Action;
 
 use ArrayObject;
-use Fiberpay\SyliusFiberpayPlugin\Bridge\OpenPayUBridgeInterface;
-use OpenPayU_Exception;
-use OpenPayU_Result;
+use Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayApi;
+use Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayCallback;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
-use Payum\Core\GatewayAwareTrait;
+use Sylius\Component\Core\Model\PaymentInterface;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Request\Notify;
-use Sylius\Component\Core\Model\PaymentInterface;
+use Sylius\Component\Core\OrderPaymentStates;
 use Webmozart\Assert\Assert;
 
 final class NotifyAction implements ActionInterface, ApiAwareInterface
 {
-    use GatewayAwareTrait;
 
-    /** @var OpenPayUBridgeInterface */
-    private $openPayUBridge;
+    /** @var FiberpayApi */
+    private $api;
 
-    /** @param OpenPayUBridgeInterface $openPayUBridge */
-    public function __construct(OpenPayUBridgeInterface $openPayUBridge)
-    {
-        $this->openPayUBridge = $openPayUBridge;
-    }
-
-    /**
-     * @throws UnsupportedApiException if the given Api is not supported.
-     */
-    public function setApi($api): void
-    {
-        if (false === is_array($api)) {
-            throw new UnsupportedApiException('Not supported. Expected to be set as array.');
-        }
-
-        $this->openPayUBridge->setAuthorizationData(
-            $api['environment'],
-            $api['signature_key'],
-            $api['pos_id'],
-            $api['oauth_client_id'],
-            $api['oauth_client_secret']
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function execute($request): void
     {
         /** @var $request Notify */
         RequestNotSupportedException::assertSupports($this, $request);
         /** @var PaymentInterface $payment */
         $payment = $request->getFirstModel();
+
+        $order = $payment->getOrder();
         Assert::isInstanceOf($payment, PaymentInterface::class);
 
         $model = $request->getModel();
 
         if ('POST' === $_SERVER['REQUEST_METHOD']) {
             $body = file_get_contents('php://input');
-            $data = trim($body);
+            $jwt = trim($body);
 
-            try {
-                $result = $this->openPayUBridge->consumeNotification($data);
+            $callback = new FiberpayCallback($jwt, $this->api->getSecretKey());
+            $payment->setState(PaymentInterface::STATE_COMPLETED);
+            $orderItemData = $callback->getOrderItemData();
 
-                if (null !== $result) {
-                    /** @var mixed $response */
-                    $response = $result->getResponse();
-                    if ($response->order->orderId) {
-                        /** @var OpenPayU_Result $order */
-                        $order = $this->openPayUBridge->retrieve($response->order->orderId);
-                        if (OpenPayUBridgeInterface::SUCCESS_API_STATUS === $order->getStatus()) {
-                            if (PaymentInterface::STATE_COMPLETED !== $payment->getState()) {
-                                $status = $order->getResponse()->orders[0]->status;
-                                $model['statusPayU'] = $status;
-                                $request->setModel($model);
-                            }
+            $model['status'] = $orderItemData->status;
+            $request->setModel($model);
+            $payment->setState(PaymentInterface::STATE_COMPLETED);
+            $order->setPaymentState(OrderPaymentStates::STATE_PAID);
 
-                            throw new HttpResponse('SUCCESS');
-                        }
-                    }
-                }
-            } catch (OpenPayU_Exception $e) {
-                throw new HttpResponse($e->getMessage());
-            }
+            throw new HttpResponse('OK');
         }
     }
 
@@ -107,4 +61,38 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
             $request->getModel() instanceof ArrayObject
         ;
     }
+
+    public function setApi($api): void
+    {
+        if (!$api instanceof FiberpayApi) {
+            throw new UnsupportedApiException('Not supported. Expected an instance of ' . FiberpayApi::class);
+        }
+
+        $this->api = $api;
+    }
+
+    /**
+    * @return mixed
+    */
+    private function getRequestHeaders()
+    {
+        if (function_exists('apache_request_headers')) {
+            return apache_request_headers();
+        }
+
+        $headers = [];
+        foreach ($_SERVER as $key => $value) {
+            if (substr($key, 0, 5) == 'HTTP_') {
+                $headers[str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))))] = $value;
+            }
+        }
+        return $headers;
+    }
+
+    // TODO
+    private function validateApiKeyHeader($headers = [])
+    {
+        return true;
+    }
+
 }
