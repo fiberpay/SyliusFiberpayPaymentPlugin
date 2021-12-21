@@ -213,9 +213,19 @@ final class FiberpayApi
         return hash_hmac('sha512', $toBeSigned, $secretKey);
     }
 
-    public function addCollectItem($orderCode, $description, $amount, $currency = 'PLN',
-                                   $callbackUrl = null, $callbackParams = null,
-                                   $metadata = null, $redirectUrl = null) {
+    public function addCollectItem(
+        $orderCode,
+        $description,
+        $amount,
+        $currency = 'PLN',
+        $callbackUrl = null,
+        $callbackParams = null,
+        $metadata = null,
+        $redirectUrl = null,
+        $payerEmail = null,
+        $payerFirstName = null,
+        $payerLastName = null
+    ) {
         $data = [
             'amount' => $amount,
             'currency' => $currency,
@@ -223,6 +233,7 @@ final class FiberpayApi
             'parentCode' => $orderCode,
         ];
 
+        $data = $this->addPayerData($data, $payerEmail, $payerFirstName, $payerLastName);
         $data = $this->addCallbackData($data, $callbackUrl, $callbackParams);
         $data = $this->addMetadata($data, $metadata);
 
@@ -232,6 +243,15 @@ final class FiberpayApi
         $uri = "/$this->version/orders/collect/item";
 
         return $this->call('post', $uri, $data);
+    }
+
+    private function addPayerData(array $data, $email = null, $firstName = null, $lastName = null)
+    {
+        if($email) $data['payerEmail'] = $email;
+        if($firstName) $data['payerFirstName'] = $firstName;
+        if($lastName) $data['payerLastName'] = $lastName;
+
+        return $data;
     }
 
     private function addCallbackData(array $data, string $callbackUrl = null, $callbackParams = null) {

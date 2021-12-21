@@ -17,6 +17,7 @@ use Payum\Core\Security\GenericTokenFactoryInterface;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Customer\Model\CustomerInterface;
 use Webmozart\Assert\Assert;
 
 final class CaptureAction implements ActionInterface, ApiAwareInterface, GenericTokenFactoryAwareInterface
@@ -38,6 +39,9 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
 
             /** @var OrderInterface */
             $order = $payment->getOrder();
+
+            /** @var CustomerInterface */
+            $customer = $order->getCustomer();
 
             /** @var ChannelInterface */
             $channel = $order->getChannel();
@@ -69,7 +73,10 @@ final class CaptureAction implements ActionInterface, ApiAwareInterface, Generic
                 $callbackUrl,
                 null,
                 null,
-                $redirectUrl
+                $redirectUrl,
+                (string) $customer->getEmail(),
+                (string) $customer->getFirstName(),
+                (string) $customer->getLastName()
             );
 
             $orderItemData = json_decode($response)->data;
