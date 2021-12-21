@@ -14,7 +14,7 @@ use Payum\Core\Exception\UnsupportedApiException;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Request\Notify;
-use Sylius\Component\Order\Model\OrderInterface;
+use Sylius\Component\Core\OrderPaymentStates;
 use Webmozart\Assert\Assert;
 
 final class NotifyAction implements ActionInterface, ApiAwareInterface
@@ -46,7 +46,7 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
             $model['status'] = $orderItemData->status;
             $request->setModel($model);
             $payment->setState(PaymentInterface::STATE_COMPLETED);
-            $order->setPaymentState('paid');
+            $order->setPaymentState(OrderPaymentStates::STATE_PAID);
 
             throw new HttpResponse('OK');
         }
