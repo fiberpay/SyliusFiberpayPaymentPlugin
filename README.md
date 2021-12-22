@@ -12,7 +12,7 @@ Clone plugin repository
     $ git clone https://github.com/fiberpay/SyliusFiberpayPaymentPlugin.git
 ```
 
-Add to your Sylius shop composer.json
+Add to your composer.json file:
 
 ```json
     "require": {
@@ -32,7 +32,7 @@ Add to your Sylius shop composer.json
     ]
 ```
 
-Add plugin dependencies to your config/bundles.php file:
+Add to your config/bundles.php file:
 ```php
     return [
         Fiberpay\SyliusFiberpayPaymentPlugin\FiberpaySyliusPaymentPlugin::class => ['all' => true],
