@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fiberpay\FiberpaySyliusPaymentPlugin;
+namespace Fiberpay\SyliusFiberpayPaymentPlugin;
 
 use Sylius\Component\Core\Model\OrderInterface;
 

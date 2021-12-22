@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fiberpay\FiberpaySyliusPaymentPlugin\DependencyInjection;
+namespace Fiberpay\SyliusFiberpayPaymentPlugin\DependencyInjection;
 
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
-final class FiberpaySyliusPaymentExtension extends Extension
+final class SyliusFiberpayPaymentExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {

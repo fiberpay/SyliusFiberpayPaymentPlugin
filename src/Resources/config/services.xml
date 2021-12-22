@@ -4,20 +4,20 @@
     <services>
 
         <service id="app.fiberpay_payment" class="Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder">
-            <argument>Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayGatewayFactory</argument>
+            <argument>Fiberpay\SyliusFiberpayPaymentPlugin\FiberpayGatewayFactory</argument>
             <tag name="payum.gateway_factory_builder" factory="fiberpay_payment" />
         </service>
 
-        <service id="Fiberpay\FiberpaySyliusPaymentPlugin\Form\Type\FiberpayGatewayConfigurationType">
+        <service id="Fiberpay\SyliusFiberpayPaymentPlugin\Form\Type\FiberpayGatewayConfigurationType">
             <tag name="sylius.gateway_configuration_type" type="fiberpay_payment" label="Fiberpay" />
             <tag name="form.type" />
         </service>
 
-        <service id="Fiberpay\FiberpaySyliusPaymentPlugin\Action\CaptureAction" public="true">
+        <service id="Fiberpay\SyliusFiberpayPaymentPlugin\Action\CaptureAction" public="true">
             <tag name="payum.action" factory="fiberpay_payment" alias="payum.action.capture" />
         </service>
 
-        <service id="Fiberpay\FiberpaySyliusPaymentPlugin\Action\NotifyAction" public="true">
+        <service id="Fiberpay\SyliusFiberpayPaymentPlugin\Action\NotifyAction" public="true">
             <tag name="payum.action" factory="fiberpay_payment" alias="payum.action.notify"/>
         </service>
 

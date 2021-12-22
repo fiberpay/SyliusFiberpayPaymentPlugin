@@ -1,4 +1,4 @@
-# FiberpaySyliusPaymentPlugin
+# SyliusFiberpayPaymentPlugin
 
 # Overview
 
@@ -9,14 +9,14 @@ The plugin integrates [Fiberpay](https://fiberpay.pl/) with Sylius based applica
 Clone plugin repository
 
 ```bash
-    $ git clone https://github.com/fiberpay/sylius-fiberpay-plugin.git
+    $ git clone https://github.com/fiberpay/SyliusFiberpayPaymentPlugin.git
 ```
 
 Add to your Sylius shop composer.json
 
 ```json
     "require": {
-        "fiberpay/fiberpay-sylius-payment-plugin": "@dev"
+        "fiberpay/sylius-fiberpay-payment-plugin": "@dev"
     }
 ```
 
@@ -24,7 +24,7 @@ Add to your Sylius shop composer.json
     "repositories": [
         {
             "type": "path",
-            "url": "../path/to/directory/sylius-fiberpay-plugin",
+            "url": "../path/to/directory/SyliusFiberpayPaymentPlugin",
             "options": {
                 "symlink": true
             }
@@ -32,10 +32,17 @@ Add to your Sylius shop composer.json
     ]
 ```
 
+Add plugin dependencies to your config/bundles.php file:
+```php
+    return [
+        Fiberpay\SyliusFiberpayPaymentPlugin\SyliusFiberpayPaymentPlugin::class => ['all' => true],
+    ]
+```
+
 Run in your Sylius shop directory
 
 ```bash
-    $ composer update fiberpay/fiberpay-sylius-payment-plugin  --prefer-source
+    $ composer update fiberpay/sylius-fiberpay-payment-plugin  --prefer-source
 ```
 
 ## License

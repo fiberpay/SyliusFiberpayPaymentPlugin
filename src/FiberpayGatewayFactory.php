@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fiberpay\FiberpaySyliusPaymentPlugin;
+namespace Fiberpay\SyliusFiberpayPaymentPlugin;
 
-use Fiberpay\FiberpaySyliusPaymentPlugin\Action\StatusAction;
+use Fiberpay\SyliusFiberpayPaymentPlugin\Action\StatusAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayFactory;
 

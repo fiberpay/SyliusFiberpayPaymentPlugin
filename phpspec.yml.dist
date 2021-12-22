@@ -1,4 +1,4 @@
 suites:
     main:
-        namespace: Fiberpay\FiberpaySyliusPaymentPlugin
-        psr4_prefix: Fiberpay\FiberpaySyliusPaymentPlugin
+        namespace: Fiberpay\SyliusFiberpayPaymentPlugin
+        psr4_prefix: Fiberpay\SyliusFiberpayPaymentPlugin

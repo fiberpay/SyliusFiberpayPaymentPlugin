@@ -16,7 +16,7 @@ declare(strict_types=1);
  * an email on kontakt@bitbag.pl.
  */
 
-namespace Fiberpay\FiberpaySyliusPaymentPlugin;
+namespace Fiberpay\SyliusFiberpayPaymentPlugin;
 
 use Payum\Core\Exception\Http\HttpException;
 

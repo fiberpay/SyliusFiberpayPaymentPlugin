@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fiberpay\FiberpaySyliusPaymentPlugin\Action;
+namespace Fiberpay\SyliusFiberpayPaymentPlugin\Action;
 
 use ArrayObject;
-use Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayApi;
-use Fiberpay\FiberpaySyliusPaymentPlugin\FiberpayCallback;
+use Fiberpay\SyliusFiberpayPaymentPlugin\FiberpayApi;
+use Fiberpay\SyliusFiberpayPaymentPlugin\FiberpayCallback;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
