@@ -35,7 +35,7 @@ Add to your Sylius shop composer.json
 Add plugin dependencies to your config/bundles.php file:
 ```php
     return [
-        Fiberpay\SyliusFiberpayPaymentPlugin\SyliusFiberpayPaymentPlugin::class => ['all' => true],
+        Fiberpay\SyliusFiberpayPaymentPlugin\FiberpaySyliusPaymentPlugin::class => ['all' => true],
     ]
 ```
 

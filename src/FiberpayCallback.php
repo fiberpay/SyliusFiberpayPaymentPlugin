@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fiberpay\SyliusFiberpayPaymentPlugin;
 
+use ApiPlatform\Core\Exception\InvalidArgumentException;
 use Firebase\JWT\JWT;
 
 final class FiberpayCallback
@@ -14,6 +15,7 @@ final class FiberpayCallback
 
     public function __construct($jwt, $secret) {
         $this->data = $this->decodeJWT($jwt, $secret);
+        $this->validateType();
     }
 
     private function decodeJWT($jwt, $secret)
@@ -35,16 +37,12 @@ final class FiberpayCallback
     }
 
     /**
-     * @throws \Exception
-     * @return bool
+     * @throws InvalidArgumentException
      */
-    public function validateType()
+    private function validateType()
     {
         if($this->data->payload->type !== 'collect_order_item_received') {
-            // TODO dodać klasę FiberpayException
-            throw new \Exception('Invalid callback type.');
+            throw new InvalidArgumentException('Invalid callback type.');
         }
-
-        return true;
     }
 }

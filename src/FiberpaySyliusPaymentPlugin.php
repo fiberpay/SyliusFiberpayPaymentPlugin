@@ -7,7 +7,7 @@ namespace Fiberpay\SyliusFiberpayPaymentPlugin;
 use Sylius\Bundle\CoreBundle\Application\SyliusPluginTrait;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-final class SyliusFiberpayPaymentPlugin extends Bundle
+final class FiberpaySyliusPaymentPlugin extends Bundle
 {
     use SyliusPluginTrait;
 }

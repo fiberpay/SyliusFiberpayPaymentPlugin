@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fiberpay\SyliusFiberpayPaymentPlugin\Action;
 
+use ApiPlatform\Core\Exception\InvalidArgumentException;
 use ArrayObject;
 use Fiberpay\SyliusFiberpayPaymentPlugin\FiberpayApi;
 use Fiberpay\SyliusFiberpayPaymentPlugin\FiberpayCallback;
@@ -29,13 +30,15 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
         RequestNotSupportedException::assertSupports($this, $request);
         /** @var PaymentInterface $payment */
         $payment = $request->getFirstModel();
+        Assert::isInstanceOf($payment, PaymentInterface::class);
 
         $order = $payment->getOrder();
-        Assert::isInstanceOf($payment, PaymentInterface::class);
 
         $model = $request->getModel();
 
         if ('POST' === $_SERVER['REQUEST_METHOD']) {
+            $this->validateApiKeyHeader();
+
             $body = file_get_contents('php://input');
             $jwt = trim($body);
 
@@ -45,6 +48,7 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
 
             $model['status'] = $orderItemData->status;
             $request->setModel($model);
+            
             $payment->setState(PaymentInterface::STATE_COMPLETED);
             $order->setPaymentState(OrderPaymentStates::STATE_PAID);
 
@@ -89,10 +93,14 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
         return $headers;
     }
 
-    // TODO
-    private function validateApiKeyHeader($headers = [])
+    private function validateApiKeyHeader()
     {
-        return true;
+        $headers = $this->getRequestHeaders();
+        $isValid = $headers['API-Key'] === $this->api->getApiKey();
+
+        // if(!$isValid) {
+            throw new InvalidArgumentException("Invalid API-Key");
+        // }
     }
 
 }
