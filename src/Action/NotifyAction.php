@@ -48,7 +48,7 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
 
             $model['status'] = $orderItemData->status;
             $request->setModel($model);
-            
+
             $payment->setState(PaymentInterface::STATE_COMPLETED);
             $order->setPaymentState(OrderPaymentStates::STATE_PAID);
 
@@ -96,11 +96,11 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
     private function validateApiKeyHeader()
     {
         $headers = $this->getRequestHeaders();
-        $isValid = $headers['API-Key'] === $this->api->getApiKey();
+        $isValid = array_key_exists('Api-Key', $headers) && $headers['Api-Key'] === $this->api->getApiKey();
 
-        // if(!$isValid) {
+        if(!$isValid) {
             throw new InvalidArgumentException("Invalid API-Key");
-        // }
+        }
     }
 
 }
